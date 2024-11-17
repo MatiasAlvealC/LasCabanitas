@@ -21,14 +21,11 @@ from core import views
 urlpatterns = [
   path('admin/', admin.site.urls),
   path('', views.home, name='home'),
-<<<<<<< HEAD
   path('inventario/', views.inventario, name='inventario'),
   path('mantenciones/', views.mantenciones, name='mantenciones'),
   path('inventario/cabana/<int:cabana_id>/', views.inventario_detalle, name='inventario_detalle'),
-=======
   path('miReserva/', views.miReserva, name='miReserva'),
   path('reservas/', views.reservas, name='reserva'),
->>>>>>> c643d1edc175b3c600815836e944e98a106b6a79
 ]
   #path('register/', views.register, name='register'),
 

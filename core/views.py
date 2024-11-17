@@ -4,7 +4,6 @@ from django.shortcuts import render
 def home(request):
   return render(request, "core/home.html")
 
-<<<<<<< HEAD
 def inventario(request):
   return render(request, "core/inventario.html")
 
@@ -54,10 +53,8 @@ def inventario_detalle(request, cabana_id):
         'items': items_ejemplo
     }
     return render(request, "core/inventario_detalle.html", context)
-=======
 def miReserva(request):
   return render(request, "core/miReserva.html")
 
 def reservas(request):
   return render(request, "core/reservas.html")
->>>>>>> c643d1edc175b3c600815836e944e98a106b6a79
