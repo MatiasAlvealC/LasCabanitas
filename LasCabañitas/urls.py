@@ -27,8 +27,8 @@ urlpatterns = [
   path('miReserva/', views.miReserva, name='miReserva'),
   path('reservas/', views.reservas, name='reserva'),
   path('login/', views.login, name='login'),
-path('logout/', views.logout, name='logout'),
- path('register/', views.register, name='register'),
+  path('logout/', views.logout, name='logout'),
+  path('register/', views.register, name='register'),
   path('disponibilidad/', views.disponibilidad, name='disponibilidad'),
 ]
  

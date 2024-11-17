@@ -1,80 +1,96 @@
 {% extends 'core/base.html' %}
 {% load static %}
 {% block content %}
-
-<!-- Register Section -->
-<div class="container-fluid py-5">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-7">
-                <div class="card shadow-lg border-0 rounded-lg">
-                    <div class="card-header">
-                        <h3 class="text-center font-weight-light my-4">Crear Cuenta</h3>
-                    </div>
-                    <div class="card-body">
-                        <form method="POST" action="{% url 'register' %}">
-                            {% csrf_token %}
-                            
-                            {% if error_message %}
-                            <div class="alert alert-danger" role="alert">
-                                {{ error_message }}
-                            </div>
-                            {% endif %}
-
-                            <div class="form-row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="small mb-1">Nombre</label>
-                                        <input class="form-control py-4" name="first_name" 
-                                            type="text" placeholder="Ingrese su nombre" required />
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="small mb-1">Apellido</label>
-                                        <input class="form-control py-4" name="last_name" 
-                                            type="text" placeholder="Ingrese su apellido" required />
-                                    </div>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                <div class="card-header">
+                    <h3 class="text-center font-weight-light my-4">Crear Cuenta</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        
+                        <!-- Nombre y Apellidos -->
+                        <div class="form-row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="small mb-1">Nombre</label>
+                                    <input class="form-control" name="first_name" 
+                                        type="text" placeholder="Ingrese su nombre" required />
                                 </div>
                             </div>
-                            
-                            <div class="form-group">
-                                <label class="small mb-1">Correo Electrónico</label>
-                                <input class="form-control py-4" name="email" 
-                                    type="email" placeholder="Ingrese su correo electrónico" required />
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="small mb-1">Contraseña</label>
-                                        <input class="form-control py-4" name="password1" 
-                                            type="password" placeholder="Ingrese su contraseña" required />
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="small mb-1">Confirmar Contraseña</label>
-                                        <input class="form-control py-4" name="password2" 
-                                            type="password" placeholder="Confirme su contraseña" required />
-                                    </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="small mb-1">Primer Apellido</label>
+                                    <input class="form-control" name="last_name" 
+                                        type="text" placeholder="Ingrese su primer apellido" required />
                                 </div>
                             </div>
-                            
-                            <div class="form-group mt-4 mb-0">
-                                <button type="submit" class="btn btn-primary btn-block">Crear Cuenta</button>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="small mb-1">Segundo Apellido</label>
+                                    <input class="form-control" name="second_last_name" 
+                                        type="text" placeholder="Ingrese su segundo apellido" required />
+                                </div>
                             </div>
-                        </form>
-                    </div>
-                    <div class="card-footer text-center">
-                        <div class="small">
-                            <a href="{% url 'login' %}">¿Ya tiene una cuenta? Inicie sesión</a>
                         </div>
+
+                        <!-- RUT -->
+                        <div class="form-group">
+                            <label class="small mb-1">RUT</label>
+                            <input class="form-control" name="rut" 
+                                type="text" placeholder="Ingrese su RUT (sin puntos y con guión)" required />
+                        </div>
+
+                        <!-- Correo Electrónico -->
+                        <div class="form-group">
+                            <label class="small mb-1">Correo Electrónico</label>
+                            <input class="form-control" name="email" 
+                                type="email" placeholder="Ingrese su correo electrónico" required />
+                        </div>
+
+                        <!-- Contraseñas -->
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="small mb-1">Contraseña</label>
+                                    <input class="form-control" name="password1" 
+                                        type="password" placeholder="Ingrese su contraseña" required />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="small mb-1">Confirmar Contraseña</label>
+                                    <input class="form-control" name="password2" 
+                                        type="password" placeholder="Confirme su contraseña" required />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mensajes de error -->
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-danger" role="alert">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        <!-- Botón de registro -->
+                        <div class="form-group mt-4 mb-0">
+                            <button type="submit" class="btn btn-primary btn-block">Crear Cuenta</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center">
+                    <div class="small">
+                        ¿Ya tiene una cuenta? <a href="{% url 'login' %}">Inicie sesión</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 {% endblock %}

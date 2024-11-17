@@ -4,7 +4,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
-
 # Create your views here.
 def home(request):
   return render(request, "core/home.html")
@@ -103,6 +102,8 @@ def register(request):
     if request.method == 'POST':
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
+        second_last_name = request.POST.get('second_last_name')
+        rut = request.POST.get('rut')
         email = request.POST.get('email')
         password1 = request.POST.get('password1')
         password2 = request.POST.get('password2')
@@ -115,13 +116,17 @@ def register(request):
             messages.error(request, 'El correo electrónico ya está registrado')
             return render(request, 'core/register.html')
 
+        if not rut or '-' not in rut:
+            messages.error(request, 'El formato del RUT no es válido')
+            return render(request, 'core/register.html')
+
         # Crear el nuevo usuario
         user = User.objects.create_user(
             username=email,
             email=email,
             password=password1,
             first_name=first_name,
-            last_name=last_name
+            last_name="{last_name} {second_last_name}"
         )
 
         # Iniciar sesión automáticamente
