@@ -4,6 +4,9 @@ from django.shortcuts import render
 def home(request):
   return render(request, "core/home.html")
 
+def disponibilidad(request):
+  return render(request, "core/disponibilidad.html")
+
 def inventario(request):
   return render(request, "core/inventario.html")
 
