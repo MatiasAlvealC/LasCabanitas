@@ -9,6 +9,9 @@ from django.contrib.auth.decorators import login_required
 def home(request):
   return render(request, "core/home.html")
 
+def disponibilidad(request):
+  return render(request, "core/disponibilidad.html")
+
 def inventario(request):
   return render(request, "core/inventario.html")
 
