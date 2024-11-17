@@ -21,6 +21,11 @@ from core import views
 urlpatterns = [
   path('admin/', admin.site.urls),
   path('', views.home, name='home'),
+  path('inventario/', views.inventario, name='inventario'),
+  path('mantenciones/', views.mantenciones, name='mantenciones'),
+  path('inventario/cabana/<int:cabana_id>/', views.inventario_detalle, name='inventario_detalle'),
   path('miReserva/', views.miReserva, name='miReserva'),
   path('reservas/', views.reservas, name='reserva'),
 ]
+  #path('register/', views.register, name='register'),
+
