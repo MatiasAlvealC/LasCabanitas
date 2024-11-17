@@ -1,89 +1,162 @@
+{% extends 'core/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Las cabañitas</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="Free HTML Templates" name="keywords">
-    <meta content="Free HTML Templates" name="description">
+{% block content %}
 
-    <!-- Favicon -->
-    <link href="{% static 'core/img/favicon.ico' %}" rel="icon">
+<!-- Título Mantenciones -->
+<div class="container-fluid py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1 class="display-4">MANTENCIONES</h1>
+        </div>
 
-    <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"> 
+        <!-- Botón para agregar nueva mantención -->
+        <div class="text-right mb-4">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#nuevaMantencionModal">
+                <i class="fas fa-plus mr-2"></i>Programar Nueva Mantención
+            </button>
+        </div>
 
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+        <!-- Tabs de Mantenciones -->
+        <ul class="nav nav-tabs mb-4">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#programadas">Mantenciones Programadas</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#historial">Historial de Mantenciones</a>
+            </li>
+        </ul>
 
-    <!-- Libraries Stylesheet -->
-    <link href="{% static 'core/lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
-    <link href="{% static 'core/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css' %}" rel="stylesheet" />
-    <!-- Customized Bootstrap Stylesheet -->
-    <link href="{% static 'core/css/style.css' %}" rel="stylesheet">
-  </head>
-    <body>
-      <!-- Topbar Start -->
-      <div class="container-fluid bg-light pt-3 d-none d-lg-block">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6 text-center text-lg-left mb-2 mb-lg-0">
-                    <div class="d-inline-flex align-items-center">
-                        <p><i class="fa fa-envelope mr-2"></i>lascabañotas@gmail.com</p>
-                        <p class="text-body px-3">|</p>
-                        <p><i class="fa fa-phone-alt mr-2"></i>+569 88776655</p>
-                    </div>
+        <!-- Contenido de los Tabs -->
+        <div class="tab-content">
+            <!-- Mantenciones Programadas -->
+            <div class="tab-pane fade show active" id="programadas">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Cabaña</th>
+                                <th>Tipo</th>
+                                <th>Descripción</th>
+                                <th>Fecha Programada</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Ruka</td>
+                                <td>Preventiva</td>
+                                <td>Revisión sistema eléctrico</td>
+                                <td>15/04/2024</td>
+                                <td><span class="badge badge-warning">Pendiente</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-success" title="Completar">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-info" title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" title="Eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div class="col-lg-6 text-center text-lg-right">
-                    <div class="d-inline-flex align-items-center">
-                        <a class="text-primary px-3" href="">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a class="text-primary px-3" href="">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                        <a class="text-primary px-3" href="">
-                            <i class="fab fa-linkedin-in"></i>
-                        </a>
-                        <a class="text-primary px-3" href="">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a class="text-primary pl-3" href="">
-                            <i class="fab fa-youtube"></i>
-                        </a>
-                    </div>
+            </div>
+
+            <!-- Historial de Mantenciones -->
+            <div class="tab-pane fade" id="historial">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Cabaña</th>
+                                <th>Tipo</th>
+                                <th>Descripción</th>
+                                <th>Fecha Realizada</th>
+                                <th>Costo</th>
+                                <th>Responsable</th>
+                                <th>Detalles</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Pewma</td>
+                                <td>Correctiva</td>
+                                <td>Reparación calefont</td>
+                                <td>10/03/2024</td>
+                                <td>$150.000</td>
+                                <td>Juan Pérez</td>
+                                <td>
+                                    <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#detallesModal">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Topbar End -->
+</div>
 
-
-    <!-- Navbar Start -->
-    <div class="container-fluid position-relative nav-bar p-0">
-        <div class="container-lg position-relative p-0 px-lg-3" style="z-index: 9;">
-            <nav class="navbar navbar-expand-lg bg-light navbar-light shadow-lg py-3 py-lg-0 pl-3 pl-lg-5">
-                <a href="" class="navbar-brand">
-                    <h1 class="m-0 text-primary"><span class="text-dark">Las</span>Cabañitas</h1>
-                </a>
-                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-                    <span class="navbar-toggler-icon"></span>
+<!-- Modal Nueva Mantención -->
+<div class="modal fade" id="nuevaMantencionModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Programar Nueva Mantención</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
                 </button>
-                <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
-                    <div class="navbar-nav ml-auto py-0">
-                        <a href="/" class="nav-item nav-link active">Inicio</a>
-                        <a href="about.html" class="nav-item nav-link">Disponibilidad</a>
-                        <a href="service.html" class="nav-item nav-link">Mis reservas</a>
-                        <a href="contact.html" class="nav-item nav-link">Reservas</a>
-                        <a href="/inventario.html/" class="nav-item nav-link">inventario</a>
-                        <a href="contact.html" class="nav-item nav-link">Mantenciones</a>
-                        <a href="contact.html" class="nav-item nav-link">Iniciar sesión</a>
-
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label>Cabaña</label>
+                        <select class="form-control">
+                            <option>Ruka</option>
+                            <option>Pewma</option>
+                            <option>Kutral</option>
+                            <option>Lafken</option>
+                            <option>Puyehue</option>
+                            <option>Canelo</option>
+                        </select>
                     </div>
-                </div>
-            </nav>
+                    <div class="form-group">
+                        <label>Tipo de Mantención</label>
+                        <select class="form-control">
+                            <option>Preventiva</option>
+                            <option>Correctiva</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Descripción</label>
+                        <textarea class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha Programada</label>
+                        <input type="date" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Responsable</label>
+                        <input type="text" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Costo Estimado</label>
+                        <input type="number" class="form-control">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary">Guardar</button>
+            </div>
         </div>
     </div>
-    <!-- Navbar End -->
+</div>
+
+{% endblock %}
