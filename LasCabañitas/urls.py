@@ -26,7 +26,10 @@ urlpatterns = [
   path('inventario/cabana/<int:cabana_id>/', views.inventario_detalle, name='inventario_detalle'),
   path('miReserva/', views.miReserva, name='miReserva'),
   path('reservas/', views.reservas, name='reserva'),
+  path('login/', views.login, name='login'),
+  path('logout/', views.logout, name='logout'),
+  path('register/', views.register, name='register'),
   path('disponibilidad/', views.disponibilidad, name='disponibilidad'),
 ]
-  #path('register/', views.register, name='register'),
+ 
 
