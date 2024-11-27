@@ -1,0 +1,63 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container-fluid py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                {% if cabana.imagenes.first %}
+                    <img class="img-fluid mb-4" src="{{ cabana.imagenes.first.imagen.url }}" alt="{{ cabana.nombre_cabana }}">
+                {% else %}
+                    <img class="img-fluid mb-4" src="{% static 'core/img/default_cabana.jpg' %}" alt="Imagen no disponible">
+                {% endif %} <!-- Cierra el bloque if -->
+                <h1 class="mb-4">{{ cabana.nombre_cabana }}</h1>
+                <p><strong>Capacidad:</strong> Hasta {{ cabana.capacidad }} personas</p>
+                <p><strong>Precio por noche:</strong> ${{ cabana.precio }}</p>
+            </div>
+            <div class="col-lg-6">
+                <h3 class="mb-4">Reservar esta cabaña</h3>
+                {% if error %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endif %}
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="fecha_inicio">Fecha de inicio:</label>
+                        <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha_fin">Fecha de fin:</label>
+                        <input type="date" id="fecha_fin" name="fecha_fin" class="form-control" required>
+                    </div>
+                    <p><strong>Total: $</strong><span id="total">0</span></p>
+                    <button type="submit" class="btn btn-primary">Reservar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const precio = {{ cabana.precio }};
+    const totalElement = document.getElementById('total');
+    const fechaInicio = document.getElementById('fecha_inicio');
+    const fechaFin = document.getElementById('fecha_fin');
+
+    function calcularTotal() {
+        if (fechaInicio.value && fechaFin.value) {
+            const inicio = new Date(fechaInicio.value);
+            const fin = new Date(fechaFin.value);
+            const diffTime = Math.abs(fin - inicio);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            totalElement.textContent = diffDays * precio || 0;
+        } else {
+            totalElement.textContent = 0;
+        }
+    }
+
+    fechaInicio.addEventListener('change', calcularTotal);
+    fechaFin.addEventListener('change', calcularTotal);
+</script>
+
+{% endblock %}

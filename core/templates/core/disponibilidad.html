@@ -9,108 +9,30 @@
             <h1>Todas las cabañas se encuentran en medio de la naturaleza y a pasos del río .</h1>
         </div>
         <div class="row">
+          {% for cabana in cabanas %}
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="package-item bg-white mb-2">
-                    <img class="img-fluid" src="{% static 'core/img/cabaña1.jpg' %}" alt="">
+                    {% if cabana.imagenes.first %}
+                        <img class="img-fluid" src="{{ cabana.imagenes.first.imagen.url }}" alt="{{ cabana.nombre_cabana }}">
+                    {% else %}
+                        <img class="img-fluid" src="{% static 'core/img/default_cabana.jpg' %}" alt="Imagen no disponible">
+                    {% endif %}
+
                     <div class="p-4">
                         <div class="d-flex justify-content-between mb-3">
-                            <small class="m-0"><i class="fa fa-user text-primary mr-2"></i> Hasta 2 Personas</small>
+                            <small class="m-0"><i class="fa fa-user text-primary mr-2"></i> Hasta {{ cabana.capacidad }} Personas</small>
                         </div>
-                        <a class="h5 text-decoration-none" href="">Ruka</a>
+                        <a class="h5 text-decoration-none" href="{% url 'cabana_detalle' cabana.id %}">{{ cabana.nombre_cabana }}</a>
                         <div class="border-top mt-4 pt-4">
                             <div class="d-flex justify-content-between">
                                 <h6 class="m-0"><i class="fa fa-star text-primary mr-2"></i>4.8 <small>(40)</small></h6>
-                                <h5 class="m-0">$100.000</h5>
+                                <h5 class="m-0">${{ cabana.precio }}</h5>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="package-item bg-white mb-2">
-                    <img class="img-fluid" src="{% static 'core/img/cabaña3.jpg' %}" alt="">
-                    <div class="p-4">
-                        <div class="d-flex justify-content-between mb-3">
-                            <small class="m-0"><i class="fa fa-user text-primary mr-2"></i>Hasta 2 Personas</small>
-                        </div>
-                        <a class="h5 text-decoration-none" href="">Pewma</a>
-                        <div class="border-top mt-4 pt-4">
-                            <div class="d-flex justify-content-between">
-                                <h6 class="m-0"><i class="fa fa-star text-primary mr-2"></i>4.5 <small>(20)</small></h6>
-                                <h5 class="m-0">$100.000</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="package-item bg-white mb-2">
-                    <img class="img-fluid" src="{% static 'core/img/cabaña7.jpg' %}" alt="">
-                    <div class="p-4">
-                        <div class="d-flex justify-content-between mb-3">
-                            <small class="m-0"><i class="fa fa-user text-primary mr-2"></i>Hasta 4 Personas</small>
-                        </div>
-                        <a class="h5 text-decoration-none" href="">Kutral</a>
-                        <div class="border-top mt-4 pt-4">
-                            <div class="d-flex justify-content-between">
-                                <h6 class="m-0"><i class="fa fa-star text-primary mr-2"></i>4.0 <small>(25)</small></h6>
-                                <h5 class="m-0">$120.000</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="package-item bg-white mb-2">
-                    <img class="img-fluid" src="{% static 'core/img/cabaña2.jpg' %}" alt="">
-                    <div class="p-4">
-                        <div class="d-flex justify-content-between mb-3">
-                            <small class="m-0"><i class="fa fa-user text-primary mr-2"></i>Hasta 4 Personas</small>
-                        </div>
-                        <a class="h5 text-decoration-none" href="">Lafken</a>
-                        <div class="border-top mt-4 pt-4">
-                            <div class="d-flex justify-content-between">
-                                <h6 class="m-0"><i class="fa fa-star text-primary mr-2"></i>4.8 <small>(28)</small></h6>
-                                <h5 class="m-0">$120.000</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="package-item bg-white mb-2">
-                    <img class="img-fluid" src="{% static 'core/img/cabaña5.jpg' %}" alt="">
-                    <div class="p-4">
-                        <div class="d-flex justify-content-between mb-3">
-                            <small class="m-0"><i class="fa fa-user text-primary mr-2"></i>Hasta 6 Personas</small>
-                        </div>
-                        <a class="h5 text-decoration-none" href="">Puyehue</a>
-                        <div class="border-top mt-4 pt-4">
-                            <div class="d-flex justify-content-between">
-                                <h6 class="m-0"><i class="fa fa-star text-primary mr-2"></i>4.5 <small>(30)</small></h6>
-                                <h5 class="m-0">$140.000</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="package-item bg-white mb-2">
-                    <img class="img-fluid" src="{% static 'core/img/portadita.jpg' %}" alt="">
-                    <div class="p-4">
-                        <div class="d-flex justify-content-between mb-3">
-                            <small class="m-0"><i class="fa fa-user text-primary mr-2"></i>Hasta 8 Personas</small>
-                        </div>
-                        <a class="h5 text-decoration-none" href="">Canelo</a>
-                        <div class="border-top mt-4 pt-4">
-                            <div class="d-flex justify-content-between">
-                                <h6 class="m-0"><i class="fa fa-star text-primary mr-2"></i>4.5 <small>(30)</small></h6>
-                                <h5 class="m-0">$160.000</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+          {% endfor %}
         </div>
     </div>
 </div>

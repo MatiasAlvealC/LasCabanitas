@@ -5,26 +5,22 @@
 <div class="container-fluid py-5">
   <div class="container pt-5 pb-3">
       <div class="text-center mb-3 pb-3">
-          <h1>Mi Reserva </h1>
+          <h1>Mi Reserva</h1>
       </div>
       
       <!-- Carousel Start -->
       <div id="destinationCarousel" class="carousel slide mb-4" data-ride="carousel">
           <ol class="carousel-indicators">
-              <li data-target="#destinationCarousel" data-slide-to="0" class="active"></li>
-              <li data-target="#destinationCarousel" data-slide-to="1"></li>
-              <li data-target="#destinationCarousel" data-slide-to="2"></li>
+              {% for imagen in reserva.cabana.imagenes.all %}
+                  <li data-target="#destinationCarousel" data-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}"></li>
+              {% endfor %}
           </ol>
           <div class="carousel-inner">
-              <div class="carousel-item active">
-                  <img class="d-block w-100" src="img/package-1.jpg" alt="First slide">
-              </div>
-              <div class="carousel-item">
-                  <img class="d-block w-100" src="img/package-2.jpg" alt="Second slide">
-              </div>
-              <div class="carousel-item">
-                  <img class="d-block w-100" src="img/package-3.jpg" alt="Third slide">
-              </div>
+              {% for imagen in reserva.cabana.imagenes.all %}
+                  <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                      <img class="d-block w-100" src="{{ imagen.imagen.url }}" alt="Imagen de {{ reserva.cabana.nombre_cabana }}">
+                  </div>
+              {% endfor %}
           </div>
           <a class="carousel-control-prev" href="#destinationCarousel" role="button" data-slide="prev">
               <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -38,43 +34,43 @@
       <!-- Carousel End -->
       
       <div class="reservation-details bg-white p-4">
-          <h2 class="mb-3">Your Perfect Tour Package</h2>
+          <h2 class="mb-3">Detalles de la Reserva</h2>
           <div class="d-flex justify-content-between mb-3">
               <div>
-                  <h5>Destination:</h5>
-                  <p>Thailand</p>
+                  <h5>Cabaña:</h5>
+                  <p>{{ reserva.cabana.nombre_cabana }}</p>
               </div>
               <div>
-                  <h5>Duration:</h5>
-                  <p>3 days</p>
+                  <h5>Capacidad:</h5>
+                  <p>{{ reserva.cabana.capacidad }} Personas</p>
               </div>
               <div>
-                  <h5>Guests:</h5>
-                  <p>2 Persons</p>
+                  <h5>Estado:</h5>
+                  <p>{{ reserva.estado }}</p>
               </div>
           </div>
           <div class="d-flex justify-content-between mb-3">
               <div>
-                  <h5>Reservation Dates:</h5>
-                  <p>Start Date: <span>MM/DD/YYYY</span></p>
-                  <p>End Date: <span>MM/DD/YYYY</span></p>
+                  <h5>Fechas de Reserva:</h5>
+                  <p>Fecha Inicio: <span>{{ reserva.fecha_inicio|date:"d/m/Y" }}</span></p>
+                  <p>Fecha Fin: <span>{{ reserva.fecha_fin|date:"d/m/Y" }}</span></p>
               </div>
               <div>
-                  <h5>Rating:</h5>
-                  <p><i class="fa fa-star text-primary mr-2"></i>4.5 <small>(250 reviews)</small></p>
+                  <h5>Total Noches:</h5>
+                  <p>{{ reserva.noches }} noches</p>
               </div>
               <div>
-                  <h5>Total Price:</h5>
-                  <p>$350</p>
+                  <h5>Precio Total:</h5>
+                  <p>${{ reserva.total|floatformat:0 }}</p>
               </div>
           </div>
           <div class="border-top mt-4 pt-4">
-              <h5>Package Details</h5>
-              <p>Enjoy an unforgettable experience exploring amazing places with us. This package offers a fully planned itinerary, including sightseeing, local cuisine, and guided tours.</p>
+              <h5>Descripción</h5>
+              <p>Disfruta de una estadía inolvidable en {{ reserva.cabana.nombre_cabana }}. Sumérgete en la tranquilidad de la naturaleza y relájate en nuestra cómoda cabaña.</p>
           </div>
           <div class="text-center mt-4">
-              <a href="index.html" class="btn btn-primary">Back to Packages</a>
-              <a href="booking-confirmation.html" class="btn btn-success">Confirm Booking</a>
+              <a href="{% url 'disponibilidad' %}" class="btn btn-primary">Volver a Disponibilidad</a>
+              <a href="#" class="btn btn-success">Confirmar Reserva</a>
           </div>
       </div>
   </div>

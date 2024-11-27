@@ -1,15 +1,55 @@
 from django.shortcuts import render
+from BD.models import Cabana, Reserva
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404
+
 
 # Create your views here.
 def home(request):
   return render(request, "core/home.html")
 
 def disponibilidad(request):
-  return render(request, "core/disponibilidad.html")
+  # Obtén todas las cabañas de la base de datos
+  cabanas = Cabana.objects.prefetch_related('imagenes').all()
+  return render(request, "core/disponibilidad.html", {'cabanas': cabanas})
+
+@login_required
+def cabana_detalle(request, cabana_id):
+    # Obtener la cabaña
+    cabana = get_object_or_404(Cabana, id=cabana_id)
+    
+    if request.method == 'POST':
+        # Capturar fechas del formulario
+        fecha_inicio = request.POST.get('fecha_inicio')
+        fecha_fin = request.POST.get('fecha_fin')
+
+        if fecha_inicio and fecha_fin:
+            # Crear la reserva
+            reserva = Reserva(
+                estado='pendiente',
+                fecha_inicio=fecha_inicio,
+                fecha_fin=fecha_fin,
+                usuario=request.user,
+                cabana=cabana
+            )
+            reserva.save()
+            return redirect('miReserva', reserva_id=reserva.id)
+        else:
+            return render(request, 'core/cabana_detalle.html', {
+                'cabana': cabana,
+                'error': 'Debe completar todas las fechas.',
+            })
+    
+    return render(request, 'core/cabana_detalle.html', {'cabana': cabana})
+
+@login_required
+def miReserva(request, reserva_id):
+    reserva = get_object_or_404(Reserva, id=reserva_id, usuario=request.user)
+    return render(request, 'core/miReserva.html', {'reserva': reserva})
+
 
 def inventario(request):
   return render(request, "core/inventario.html")
@@ -60,8 +100,7 @@ def inventario_detalle(request, cabana_id):
         'items': items_ejemplo
     }
     return render(request, "core/inventario_detalle.html", context)
-def miReserva(request):
-  return render(request, "core/miReserva.html")
+
 
 def reservas(request):
   return render(request, "core/reservas.html")
