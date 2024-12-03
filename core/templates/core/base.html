@@ -75,12 +75,21 @@
                     <div class="navbar-nav ml-auto py-0">
                         <a href="/" class="nav-item nav-link active">Inicio</a>
                         <a href="/disponibilidad/" class="nav-item nav-link">Disponibilidad</a>
-                        <a href="/miReserva/" class="nav-item nav-link">Mi reserva</a>
-                        <a href="/reservas/" class="nav-item nav-link">Reservas</a>
-                        <a href="/inventario/" class="nav-item nav-link">inventario</a>
-                        <a href="/mantenciones/" class="nav-item nav-link">Mantenciones</a>                            
-                        <a href="/login/" class="nav-item nav-link">Iniciar Sesión</a>
-                        </div>
+                        
+                        {% if request.session.usuario_id %}
+                            {% if request.session.usuario_rol == 'administrador' %}
+                                <a href="/reservas/" class="nav-item nav-link">Reservas</a>
+                                <a href="/inventario/" class="nav-item nav-link">Inventario</a>
+                                <a href="/mantenciones/" class="nav-item nav-link">Mantenciones</a>
+                            {% else %}
+                                <a href="/miReserva/" class="nav-item nav-link">Mi reserva</a>
+                            {% endif %}
+                            
+                            <span class="nav-item nav-link">{{ request.session.usuario_nombre }}</span>
+                            <a href="/logout/" class="nav-item nav-link">Cerrar Sesión</a>
+                        {% else %}
+                            <a href="/login/" class="nav-item nav-link">Iniciar Sesión</a>
+                        {% endif %}
                     </div>
                 </div>
             </nav>

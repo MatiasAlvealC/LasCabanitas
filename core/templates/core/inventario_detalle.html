@@ -9,9 +9,8 @@
         <div class="container">
             <div class="text-center mb-5">
                 <h1 class="display-4">Inventario Cabaña {{ numero_cabana }}</h1>
-                <h4>Capacidad: {{ capacidad }} personas</h4>
             </div>
-
+            
             <!-- Lista de Inventario -->
             <div class="row">
                 <div class="col-lg-8 mx-auto">
@@ -20,30 +19,8 @@
                             <h5 class="mb-0">Lista de Items</h5>
                         </div>
                         <div class="card-body">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Item</th>
-                                        <th>Cantidad</th>
-                                        <th>Estado</th>
-                                        <th>Última Revisión</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for item in items %}
-                                    <tr>
-                                        <td>{{ item.nombre }}</td>
-                                        <td>{{ item.cantidad }}</td>
-                                        <td>
-                                            <span class="badge {% if item.estado == 'Bueno' %}bg-success{% elif item.estado == 'Regular' %}bg-warning{% else %}bg-danger{% endif %}">
-                                                {{ item.estado }}
-                                            </span>
-                                        </td>
-                                        <td>{{ item.ultima_revision }}</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+                            <!-- Aquí irá la tabla con datos de la BD -->
+                            <p class="text-center">No hay items registrados</p>
                         </div>
                     </div>
                 </div>
