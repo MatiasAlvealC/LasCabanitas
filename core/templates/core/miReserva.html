@@ -1,80 +1,36 @@
 {% extends 'core/base.html' %}
 {% load static %}
 {% block content %}
-<!-- Reservation Confirmation Start -->
-<div class="container-fluid py-5">
-  <div class="container pt-5 pb-3">
-      <div class="text-center mb-3 pb-3">
-          <h1>Mi Reserva</h1>
-      </div>
-      
-      <!-- Carousel Start -->
-      <div id="destinationCarousel" class="carousel slide mb-4" data-ride="carousel">
-          <ol class="carousel-indicators">
-              {% for imagen in reserva.cabana.imagenes.all %}
-                  <li data-target="#destinationCarousel" data-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}"></li>
-              {% endfor %}
-          </ol>
-          <div class="carousel-inner">
-              {% for imagen in reserva.cabana.imagenes.all %}
-                  <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                      <img class="d-block w-100" src="{{ imagen.imagen.url }}" alt="Imagen de {{ reserva.cabana.nombre_cabana }}">
-                  </div>
-              {% endfor %}
-          </div>
-          <a class="carousel-control-prev" href="#destinationCarousel" role="button" data-slide="prev">
-              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-              <span class="sr-only">Previous</span>
-          </a>
-          <a class="carousel-control-next" href="#destinationCarousel" role="button" data-slide="next">
-              <span class="carousel-control-next-icon" aria-hidden="true"></span>
-              <span class="sr-only">Next</span>
-          </a>
-      </div>
-      <!-- Carousel End -->
-      
-      <div class="reservation-details bg-white p-4">
-          <h2 class="mb-3">Detalles de la Reserva</h2>
-          <div class="d-flex justify-content-between mb-3">
-              <div>
-                  <h5>Cabaña:</h5>
-                  <p>{{ reserva.cabana.nombre_cabana }}</p>
-              </div>
-              <div>
-                  <h5>Capacidad:</h5>
-                  <p>{{ reserva.cabana.capacidad }} Personas</p>
-              </div>
-              <div>
-                  <h5>Estado:</h5>
-                  <p>{{ reserva.estado }}</p>
-              </div>
-          </div>
-          <div class="d-flex justify-content-between mb-3">
-              <div>
-                  <h5>Fechas de Reserva:</h5>
-                  <p>Fecha Inicio: <span>{{ reserva.fecha_inicio|date:"d/m/Y" }}</span></p>
-                  <p>Fecha Fin: <span>{{ reserva.fecha_fin|date:"d/m/Y" }}</span></p>
-              </div>
-              <div>
-                  <h5>Total Noches:</h5>
-                  <p>{{ reserva.noches }} noches</p>
-              </div>
-              <div>
-                  <h5>Precio Total:</h5>
-                  <p>${{ reserva.total|floatformat:0 }}</p>
-              </div>
-          </div>
-          <div class="border-top mt-4 pt-4">
-              <h5>Descripción</h5>
-              <p>Disfruta de una estadía inolvidable en {{ reserva.cabana.nombre_cabana }}. Sumérgete en la tranquilidad de la naturaleza y relájate en nuestra cómoda cabaña.</p>
-          </div>
-          <div class="text-center mt-4">
-              <a href="{% url 'disponibilidad' %}" class="btn btn-primary">Volver a Disponibilidad</a>
-              <a href="#" class="btn btn-success">Confirmar Reserva</a>
-          </div>
-      </div>
-  </div>
-</div>
-<!-- Reservation Confirmation End -->
+<div class="container py-5">
+    <div class="text-center mb-4">
+        <h1>Mis Reservas</h1>
+    </div>
 
+    {% if reservas %}
+        <div class="row">
+            {% for reserva in reservas %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-header text-center">
+                            <h5>{{ reserva.cabana.nombre_cabana }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Fecha Inicio:</strong> {{ reserva.fecha_inicio|date:"d/m/Y" }}</p>
+                            <p><strong>Fecha Fin:</strong> {{ reserva.fecha_fin|date:"d/m/Y" }}</p>
+                            <p><strong>Estado:</strong> {{ reserva.estado }}</p>
+                            <p><strong>Total:</strong> ${{ reserva.total|floatformat:0 }}</p>
+                        </div>
+                        <div class="card-footer text-center">
+                            <a href="{% url 'miReserva' reserva.id %}" class="btn btn-primary">Ver Detalles</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center" role="alert">
+            No tienes reservas registradas.
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

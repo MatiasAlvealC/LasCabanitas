@@ -9,128 +9,37 @@
             <h1 class="display-4">INVENTARIO</h1>
         </div>
 
-       <!-- Cabañas  1  -->
-                <div class="row">
-                    <div class="col-md-6 mb-4">
-                        <div class="card">
-                            <div class="d-flex align-items-center p-3">
-                                <div class="flex-shrink-0">
-                                    <img src="{% static 'core/img/cabana1.jpg' %}" alt="Cabaña 1" 
-                                        style="width: 120px; height: 90px; object-fit: cover; border-radius: 8px;">
-                                </div>
-                                <div class="flex-grow-1 ms-4">
-                                    <h5 class="mb-1">Cabaña 1: RUKA</h5>
-                                    <p class="mb-1">Capacidad: 2 personas</p>
-                                    <p class="mb-1 text-success">Estado: Disponible</p>
-                                </div>
-                                <div class="ms-auto">
-                                    <a href="{% url 'inventario_detalle' cabana_id=1 %}" class="btn btn-success">Ver Inventario</a>
-                                </div>
-                            </div>
+        <div class="row">
+            {% for cabana in cabanas %}
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="d-flex align-items-center p-3">
+                        <div class="flex-shrink-0">
+                            <img src="{{ cabana.imagenes.first.imagen.url }}" alt="{{ cabana.nombre_cabana }}" 
+                                style="width: 120px; height: 90px; object-fit: cover; border-radius: 8px;">
                         </div>
-                    </div>
-               <!-- Cabañas  2  -->
-                    <div class="col-md-6 mb-4">
-                        <div class="card">
-                            <div class="d-flex align-items-center p-3">
-                                <div class="flex-shrink-0">
-                                    <img src="{% static 'core/img/cabana2.jpg' %}" alt="Cabaña 1" 
-                                        style="width: 120px; height: 90px; object-fit: cover; border-radius: 8px;">
-                                </div>
-                                <div class="flex-grow-1 ms-4">
-                                    <h5 class="mb-1">Cabaña 2:PEWMA</h5>
-                                    <p class="mb-1">Capacidad: 2 personas</p>
-                                    <p class="mb-1 text-success">Estado: Disponible</p>
-                                </div>
-                                <div class="ms-auto">
-                                    <a href="{% url 'inventario_detalle' cabana_id=1 %}" class="btn btn-success">Ver Inventario</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-        
-       <!-- Cabañas  3  -->
-                    <div class="col-md-6 mb-4">
-                        <div class="card">
-                            <div class="d-flex align-items-center p-3">
-                                <div class="flex-shrink-0">
-                                    <img src="{% static 'core/img/cabana3.jpg' %}" alt="Cabaña 1" 
-                                        style="width: 120px; height: 90px; object-fit: cover; border-radius: 8px;">
-                                </div>
-                                <div class="flex-grow-1 ms-4">
-                                    <h5 class="mb-1">Cabaña 3:KUTRAL</h5>
-                                    <p class="mb-1">Capacidad: 4 personas</p>
-                                    <p class="mb-1 text-success">Estado: Disponible</p>
-                                </div>
-                                <div class="ms-auto">
-                                    <a href="{% url 'inventario_detalle' cabana_id=1 %}" class="btn btn-success">Ver Inventario</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-               <!-- Cabañas  4 -->
-                    <div class="col-md-6 mb-4">
-                        <div class="card">
-                            <div class="d-flex align-items-center p-3">
-                                <div class="flex-shrink-0">
-                                    <img src="{% static 'core/img/cabana4.jpg' %}" alt="Cabaña 1" 
-                                        style="width: 120px; height: 90px; object-fit: cover; border-radius: 8px;">
-                                </div>
-                                <div class="flex-grow-1 ms-4">
-                                    <h5 class="mb-1">Cabaña 4:LAFKEN</h5>
-                                    <p class="mb-1">Capacidad: 4 personas</p>
-                                    <p class="mb-1 text-success">Estado: Disponible</p>
-                                </div>
-                                <div class="ms-auto">
-                                    <a href="{% url 'inventario_detalle' cabana_id=1 %}" class="btn btn-success">Ver Inventario</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-        
-       <!-- Cabañas  5 -->
-                    <div class="col-md-6 mb-4">
-                        <div class="card">
-                            <div class="d-flex align-items-center p-3">
-                                <div class="flex-shrink-0">
-                                    <img src="{% static 'core/img/cabana5.jpg' %}" alt="Cabaña 1" 
-                                        style="width: 120px; height: 90px; object-fit: cover; border-radius: 8px;">
-                                </div>
-                                <div class="flex-grow-1 ms-4">
-                                    <h5 class="mb-1">Cabaña 5:PUYEHUE</h5>
-                                    <p class="mb-1">Capacidad: 6 personas</p>
-                                    <p class="mb-1 text-success">Estado: Disponible</p>
-                                </div>
-                                <div class="ms-auto">
-                                    <a href="{% url 'inventario_detalle' cabana_id=1 %}" class="btn btn-success">Ver Inventario</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-        
-       <!-- Cabañas  6  -->
-                    <div class="col-md-6 mb-4">
-                        <div class="card">
-                            <div class="d-flex align-items-center p-3">
-                                <div class="flex-shrink-0">
-                                    <img src="{% static 'core/img/cabana6.jpg' %}" alt="Cabaña 1" 
-                                        style="width: 120px; height: 90px; object-fit: cover; border-radius: 8px;">
-                                </div>
-                                <div class="flex-grow-1 ms-4">
-                                    <h5 class="mb-1">Cabaña 6:CANELO</h5>
-                                    <p class="mb-1">Capacidad: 8 personas</p>
-                                    <p class="mb-1 text-success">Estado: Disponible</p>
-                                </div>
-                                <div class="ms-auto">
-                                    <a href="{% url 'inventario_detalle' cabana_id=1 %}" class="btn btn-success">Ver Inventario</a>
-                                </div>
-                            </div>
+                        <div class="flex-grow-1 ms-4">
+                            <h5 class="mb-1">Cabaña: {{ cabana.nombre_cabana }}</h5>
+                            <p class="mb-1">Capacidad: {{ cabana.capacidad }} personas</p>
+                            <p class="mb-1 
+                                {% if cabana.estado == 'disponible' %}
+                                    text-success
+                                {% else %}
+                                    text-danger
+                                {% endif %}
+                            ">
+                                Estado: {{ cabana.get_estado_display }}
+                            </p>
+                        </div>                        
+                        <div class="ms-auto">
+                            <a href="{% url 'inventario_detalle' cabana_id=cabana.id %}" class="btn btn-success">Ver Inventario</a>
                         </div>
                     </div>
                 </div>
             </div>
+            {% endfor %}
         </div>
-
-
-  
+    </div>
+</div>
 {% endblock %}
+

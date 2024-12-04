@@ -15,10 +15,8 @@
                       <th>Reservation ID</th>
                       <th>Customer Name</th>
                       <th>Email</th>
-                      <th>Phone</th>
                       <th>Destination</th>
                       <th>Duration</th>
-                      <th>Guests</th>
                       <th>Start Date</th>
                       <th>End Date</th>
                       <th>Booking Time</th>
@@ -27,25 +25,28 @@
                   </tr>
               </thead>
               <tbody>
-                  <tr>
-                      <td>001</td>
-                      <td>John Doe</td>
-                      <td>john.doe@example.com</td>
-                      <td>+123456789</td>
-                      <td>Thailand</td>
-                      <td>3 days</td>
-                      <td>2 Persons</td>
-                      <td>MM/DD/YYYY</td>
-                      <td>MM/DD/YYYY</td>
-                      <td>MM/DD/YYYY HH:MM</td>
-                      <td>$350</td>
-                      <td>
-                          <a href="#" class="btn btn-sm btn-primary">View</a>
-                          <a href="#" class="btn btn-sm btn-danger">Cancel</a>
-                      </td>
-                  </tr>
-                  <!-- Repeat this <tr> for each reservation record -->
-              </tbody>
+                {% for reserva in reservas %}
+                <tr>
+                    <td>{{ reserva.id }}</td>
+                    <td>{{ reserva.usuario.nombre }} {{ reserva.usuario.apellido_paterno }}</td>
+                    <td>{{ reserva.usuario.correo }}</td>
+                    <td>{{ reserva.cabana.nombre_cabana }}</td>
+                    <td>{{ reserva.noches }} noches</td>
+                    <td>{{ reserva.fecha_inicio|date:"d/m/Y" }}</td>
+                    <td>{{ reserva.fecha_fin|date:"d/m/Y" }}</td>
+                    <td>{{ reserva.created|date:"d/m/Y H:i" }}</td>
+                    <td>${{ reserva.total }}</td>
+                    <td>
+                        <a href="#" class="btn btn-sm btn-primary">Ver</a>
+                        <a href="#" class="btn btn-sm btn-danger">Cancelar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="12" class="text-center">No hay reservas registradas</td>
+                </tr>
+                {% endfor %}
+              </tbody>              
           </table>
       </div>
   </div>

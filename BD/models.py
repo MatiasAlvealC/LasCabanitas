@@ -139,16 +139,26 @@ class Inventario(models.Model):
 
 
 class Mantencion(models.Model):
+    TIPOS_MANTENCION = [
+        ('preventiva', 'Preventiva'),
+        ('correctiva', 'Correctiva'),
+    ]
+
     nombre = models.CharField(max_length=150, help_text="Nombre o descripción de la mantención")
-    fecha_ejecucion = models.DateTimeField(help_text="Fecha en la que se realizó la mantención")
+    tipo = models.CharField(max_length=50, choices=TIPOS_MANTENCION, default='preventiva', help_text="Tipo de mantención")
+    fecha_ejecucion = models.DateTimeField(help_text="Fecha en la que se realizó la mantención o está programada")
     responsable = models.CharField(max_length=100, help_text="Nombre del responsable de realizar la mantención")
     observaciones = models.TextField(null=True, blank=True, help_text="Detalles u observaciones adicionales")
-    created = models.DateTimeField(auto_now_add = True, verbose_name = "Fech. Creacion")
-    updated = models.DateTimeField(auto_now_add = True, verbose_name = "Fech. Edicion")
+    costo_estimado = models.DecimalField(max_digits=10, decimal_places=2, help_text="Costo estimado de la mantención", null=True, blank=True)
+    cabana = models.ForeignKey(Cabana, on_delete=models.CASCADE, related_name='mantenciones')
+    estado = models.CharField(max_length=50, choices=[('pendiente', 'Pendiente'), ('realizada', 'Realizada')], default='pendiente')
+
+    created = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
+    updated = models.DateTimeField(auto_now=True, verbose_name="Última actualización")
 
     class Meta:
-        verbose_name = "Mantencion"
+        verbose_name = "Mantención"
         verbose_name_plural = "Mantenciones"
 
     def __str__(self):
-        return f"{self.nombre} - {self.fecha_ejecucion}"
+        return f"{self.nombre} - {self.fecha_ejecucion} ({self.get_estado_display()})"

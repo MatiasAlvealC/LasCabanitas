@@ -1,0 +1,34 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4>Agregar Objeto al Inventario</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="descripcion" class="form-label">Nombre del Objeto</label>
+                            <input type="text" name="descripcion" id="descripcion" class="form-control" placeholder="Ingrese un objeto" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="cantidad" class="form-label">Cantidad</label>
+                            <input type="number" name="cantidad" id="cantidad" class="form-control" placeholder="Ingrese la cantidad" min="1" required>
+                        </div>
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-success">Guardar</button>
+                            <a href="{% url 'inventario_detalle' cabana.id %}" class="btn btn-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
