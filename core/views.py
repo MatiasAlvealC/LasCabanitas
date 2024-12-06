@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.hashers import make_password, check_password
-from BD.models import Cabana, Reserva, Inventario, Mantencion
+from BD.models import Cabana, Reserva, Inventario, Mantencion, ActividadRecreativa
 from functools import wraps
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
@@ -15,6 +15,7 @@ from django.db.models import Q
 import json
 from django.contrib.auth import authenticate, login
 from .decorators import admin_required
+
 
 
 
@@ -124,14 +125,15 @@ def misReservas(request):
         estado='confirmada'
     )
 
+    # Obtener actividades recreativas disponibles
+    actividades = ActividadRecreativa.objects.all()
+
     # Verificar si el usuario puede hacer nuevas reservas
-    puede_reservar = not Reserva.objects.filter(
-        usuario=request.user,
-        estado='confirmada'
-    ).exists()
+    puede_reservar = not reservas_confirmadas.exists()
 
     context = {
         'reservas': reservas_confirmadas,
+        'actividades': actividades,
         'puede_reservar': puede_reservar
     }
     return render(request, 'core/miReserva.html', context)
@@ -316,3 +318,20 @@ def cancelar_reserva(request, reserva_id):
             messages.error(request, 'Solo se pueden cancelar reservas confirmadas.')
             
     return redirect('misReservas')
+@login_required
+def reservar_actividad(request):
+    if request.method == 'POST':
+        actividad_id = request.POST.get('actividad')
+        fecha_actividad = request.POST.get('fecha_actividad')
+
+        actividad = get_object_or_404(ActividadRecreativa, id=actividad_id)
+
+        # Crear la reserva de actividad
+        reserva_actividad = ReservaActividad.objects.create(
+            usuario=request.user,
+            actividad=actividad,
+            fecha=fecha_actividad
+        )
+
+        messages.success(request, 'Actividad reservada exitosamente.')
+        return redirect('misReservas')
