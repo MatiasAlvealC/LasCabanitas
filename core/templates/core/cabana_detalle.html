@@ -1,63 +1,61 @@
 {% extends 'core/base.html' %}
 {% load static %}
-{% block content %}
 
+{% block content %}
 <div class="container-fluid py-5">
     <div class="container">
         <div class="row">
             <div class="col-lg-6">
                 {% if cabana.imagenes.first %}
                     <img class="img-fluid mb-4" src="{{ cabana.imagenes.first.imagen.url }}" alt="{{ cabana.nombre_cabana }}">
-                {% else %}
-                    <img class="img-fluid mb-4" src="{% static 'core/img/default_cabana.jpg' %}" alt="Imagen no disponible">
-                {% endif %} <!-- Cierra el bloque if -->
+                {% endif %}
                 <h1 class="mb-4">{{ cabana.nombre_cabana }}</h1>
                 <p><strong>Capacidad:</strong> Hasta {{ cabana.capacidad }} personas</p>
                 <p><strong>Precio por noche:</strong> ${{ cabana.precio }}</p>
             </div>
             <div class="col-lg-6">
-                <h3 class="mb-4">Reservar esta cabaña</h3>
-                {% if error %}
-                    <div class="alert alert-danger">{{ error }}</div>
+                {% if user.is_authenticated and user.groups.all.0.name == 'cliente' %}
+                    <h3 class="mb-4">Reservar esta cabaña</h3>
+                    <form method="post" action="{% url 'crear_reserva' cabana.id %}">
+                        {% csrf_token %}
+                        <div class="form-group mb-3">
+                            <label for="fecha_inicio">Fecha de inicio:</label>
+                            <input type="date" 
+                                   id="fecha_inicio" 
+                                   name="fecha_inicio" 
+                                   class="form-control" 
+                                   min="{{ today|date:'Y-m-d' }}"
+                                   required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="fecha_fin">Fecha de fin:</label>
+                            <input type="date" 
+                                   id="fecha_fin" 
+                                   name="fecha_fin" 
+                                   class="form-control" 
+                                   min="{{ today|date:'Y-m-d' }}"
+                                   required>
+                        </div>
+                        <div class="mb-3">
+                            <p><strong>Total estimado: $</strong><span id="total">0</span></p>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="btnReservar">Confirmar Reserva</button>
+                    </form>
+                {% else %}
+                    <div class="alert alert-info">
+                        Debes iniciar sesión como cliente para realizar una reserva.
+                    </div>
                 {% endif %}
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <label for="fecha_inicio">Fecha de inicio:</label>
-                        <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="fecha_fin">Fecha de fin:</label>
-                        <input type="date" id="fecha_fin" name="fecha_fin" class="form-control" required>
-                    </div>
-                    <p><strong>Total: $</strong><span id="total">0</span></p>
-                    <button type="submit" class="btn btn-primary">Reservar</button>
-                </form>
             </div>
         </div>
     </div>
 </div>
 
 <script>
+    // Definir variables globales que necesita main.js
     const precio = {{ cabana.precio }};
-    const totalElement = document.getElementById('total');
-    const fechaInicio = document.getElementById('fecha_inicio');
-    const fechaFin = document.getElementById('fecha_fin');
-
-    function calcularTotal() {
-        if (fechaInicio.value && fechaFin.value) {
-            const inicio = new Date(fechaInicio.value);
-            const fin = new Date(fechaFin.value);
-            const diffTime = Math.abs(fin - inicio);
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            totalElement.textContent = diffDays * precio || 0;
-        } else {
-            totalElement.textContent = 0;
-        }
-    }
-
-    fechaInicio.addEventListener('change', calcularTotal);
-    fechaFin.addEventListener('change', calcularTotal);
+    const fechasOcupadas = {{ fechas_ocupadas|safe }};
 </script>
+<script src="{% static 'core/js/main.js' %}"></script>
 
 {% endblock %}

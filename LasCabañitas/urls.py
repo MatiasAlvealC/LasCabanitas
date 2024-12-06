@@ -40,6 +40,7 @@ urlpatterns = [
   path('register/', views.register, name='register'),
   path('login/', views.user_login, name='login'),
   path('logout/', LogoutView.as_view(), name='logout'),
+  path('crear-reserva/<int:cabana_id>/', views.crear_reserva, name='crear_reserva'),
 ]
 
 if settings.DEBUG:

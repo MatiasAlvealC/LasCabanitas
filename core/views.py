@@ -2,12 +2,17 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.hashers import make_password, check_password
-from BD.models import Usuario, Cabana, Reserva, Inventario, Mantencion
+from BD.models import Cabana, Reserva, Inventario, Mantencion
 from functools import wraps
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import CustomUserCreationForm
+from django.contrib.auth.models import User, Group
+from django.contrib.auth import login, authenticate
+from datetime import datetime, date, timedelta
+from django.db.models import Q
+import json
 
 from django.contrib.auth import authenticate, login
 
@@ -39,65 +44,76 @@ def disponibilidad(request):
 
 @login_required(login_url='/login/')  # Redirige a la URL de inicio de sesión
 def cabana_detalle(request, cabana_id):
-    # Obtener la cabaña
     cabana = get_object_or_404(Cabana, id=cabana_id)
-
-    try:
-        # Convertir el usuario autenticado a una instancia del modelo Usuario
-        usuario = Usuario.objects.get(id=request.user.id)
-    except Usuario.DoesNotExist:
-        messages.error(request, "No se encontró un usuario asociado a esta cuenta.")
-        return redirect('login')
-
-    if request.method == 'POST':
-        # Capturar fechas del formulario
-        fecha_inicio = request.POST.get('fecha_inicio')
-        fecha_fin = request.POST.get('fecha_fin')
-
-        if fecha_inicio and fecha_fin:
-            try:
-                # Crear la reserva
-                reserva = Reserva(
-                    estado='Confirmada',
-                    fecha_inicio=fecha_inicio,
-                    fecha_fin=fecha_fin,
-                    usuario=usuario,  # Asignar la instancia correcta de usuario
-                    cabana=cabana
-                )
-                reserva.save()
-                return redirect('miReserva', reserva_id=reserva.id)
-            except Exception as e:
-                return render(request, 'core/cabana_detalle.html', {
-                    'cabana': cabana,
-                    'error': f'Ocurrió un error al crear la reserva: {str(e)}',
-                })
-        else:
-            return render(request, 'core/cabana_detalle.html', {
-                'cabana': cabana,
-                'error': 'Debe completar todas las fechas.',
-            })
-
-    return render(request, 'core/cabana_detalle.html', {'cabana': cabana})
-
-@login_required(login_url='/login/')
-def misReservas(request):
-    # Obtener el modelo de usuario personalizado
-    Usuario = get_user_model()
-
-    try:
-        # Obtener al usuario autenticado
-        usuario = Usuario.objects.get(id=request.user.id)
-    except Usuario.DoesNotExist:
-        messages.error(request, "No se encontró un usuario asociado a esta cuenta.")
-        return redirect('login')
-
-    # Buscar todas las reservas del usuario
-    reservas = Reserva.objects.filter(usuario=usuario)
-
-    if not reservas.exists():
-        messages.info(request, "No tienes reservas registradas.")
     
-    return render(request, 'core/misReservas.html', {'reservas': reservas})
+    # Obtener todas las reservas confirmadas para esta cabaña
+    reservas = Reserva.objects.filter(
+        cabana=cabana,
+        estado='confirmada',
+        fecha_fin__gte=date.today()
+    )
+    
+    # Crear lista de fechas ocupadas
+    fechas_ocupadas = []
+    for reserva in reservas:
+        fecha_actual = reserva.fecha_inicio
+        while fecha_actual <= reserva.fecha_fin:
+            fechas_ocupadas.append(fecha_actual.strftime('%Y-%m-%d'))
+            fecha_actual += timedelta(days=1)
+    
+    context = {
+        'cabana': cabana,
+        'today': date.today(),
+        'fechas_ocupadas': json.dumps(fechas_ocupadas),
+    }
+    return render(request, 'core/cabana_detalle.html', context)
+
+@login_required
+def crear_reserva(request, cabana_id):
+    if request.method == 'POST':
+        try:
+            cabana = get_object_or_404(Cabana, id=cabana_id)
+            fecha_inicio = datetime.strptime(request.POST.get('fecha_inicio'), '%Y-%m-%d')
+            fecha_fin = datetime.strptime(request.POST.get('fecha_fin'), '%Y-%m-%d')
+            
+            # Verificar si hay reservas que se solapan
+            reservas_solapadas = Reserva.objects.filter(
+                cabana=cabana,
+                estado='confirmada',
+                fecha_inicio__lte=fecha_fin,
+                fecha_fin__gte=fecha_inicio
+            ).exists()
+            
+            if reservas_solapadas:
+                messages.error(request, 'Las fechas seleccionadas no están disponibles')
+                return redirect('cabana_detalle', cabana_id=cabana_id)
+            
+            # Calcular el total como entero
+            dias = (fecha_fin - fecha_inicio).days
+            monto_total = int(dias * float(cabana.precio))
+
+            # Crear la reserva
+            reserva = Reserva.objects.create(
+                usuario=request.user,
+                cabana=cabana,
+                fecha_inicio=fecha_inicio,
+                fecha_fin=fecha_fin,
+                monto_total=monto_total,
+                estado='confirmada'
+            )
+            
+            messages.success(request, 'Reserva creada exitosamente')
+            return redirect('misReservas')
+        except Exception as e:
+            messages.error(request, f'Error al crear la reserva: {str(e)}')
+            return redirect('cabana_detalle', cabana_id=cabana_id)
+    
+    return redirect('disponibilidad')
+
+@login_required
+def misReservas(request):
+    reservas = Reserva.objects.filter(usuario=request.user).order_by('-fecha_inicio')
+    return render(request, 'core/miReserva.html', {'reservas': reservas})
 
 
 @admin_required
@@ -171,9 +187,17 @@ def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Registro exitoso. Ahora puedes iniciar sesión.')
-            return redirect('login')  # Redirige a la página de inicio de sesión
+            # Guardar el usuario
+            user = form.save()
+            
+            # Asignar el grupo "cliente" al usuario
+            cliente_group, created = Group.objects.get_or_create(name='cliente')
+            user.groups.add(cliente_group)
+            
+            messages.success(request, 'Registro exitoso. Ahora puedes iniciar sesi��n.')
+            return redirect('login')
+        else:
+            messages.error(request, 'Error en el formulario. Por favor, verifica los datos.')
     else:
         form = CustomUserCreationForm()
     return render(request, 'registration/register.html', {'form': form})

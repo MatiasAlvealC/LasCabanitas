@@ -80,26 +80,26 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/disponibilidad/">Disponibilidad</a>
                     </li>
-                    {% if request.session.usuario_id %}
-                        {% if request.session.usuario_rol == 'administrador' %}
-                            <li class="nav-item"><a class="nav-link" href="/reservas/">Reservas</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/inventario/">Inventario</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/mantenciones/">Mantenciones</a></li>
+                    {% if user.is_authenticated %}
+                        {% if user.groups.all.0.name == 'administrador' %}
+                            <li class="nav-item"><a class="nav-link" href="{% url 'reservas' %}">Reservas</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'inventario' %}">Inventario</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'mantenciones' %}">Mantenciones</a></li>
                         {% else %}
-                            <li class="nav-item"><a class="nav-link" href="/miReserva/">Mi reserva</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'misReservas' %}">Mi Reserva</a></li>
                         {% endif %}
-                    {% endif %}
-                    <li class="nav-item">
-                        {% if request.session.usuario_id %}
-                            <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                        <li class="nav-item">
+                            <form action="{% url 'logout' %}" method="post" class="d-inline">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-outline-primary btn-sm">Cerrar sesión</button>
+                                <button type="submit" class="btn btn-outline-danger btn-sm">Cerrar Sesión</button>
                             </form>
-                        {% else %}
-                            <a href="{% url 'login' %}" class="btn btn-outline-primary btn-sm me-2">Iniciar sesión</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a href="{% url 'login' %}" class="btn btn-outline-primary btn-sm me-2">Iniciar Sesión</a>
                             <a href="{% url 'register' %}" class="btn btn-outline-primary btn-sm">Registrarse</a>
-                        {% endif %}
-                    </li>
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>

@@ -3,6 +3,7 @@ from datetime import timedelta
 from django.contrib.auth.models import User
 
 
+"""
 class Usuario(models.Model):
     nombre = models.CharField(max_length=100)
     apellido_paterno = models.CharField(max_length=100)
@@ -26,7 +27,7 @@ class Usuario(models.Model):
         verbose_name_plural = "usuarios"
 
     def __str__(self):
-        return f"{self.nombre} {self.apellido_paterno}"
+        return f"{self.nombre} {self.apellido_paterno}"""
 
 class Cabana(models.Model):
     ESTADOS_CABANA = [
@@ -72,41 +73,31 @@ class CabanaImage(models.Model):
 
 
 class Reserva(models.Model):
-    ESTADOS_RESERVA = [
-        ('pendiente', 'Pendiente'),
-        ('confirmada', 'Confirmada'),
-        ('cancelada', 'Cancelada'),
-    ]
-
-    estado = models.CharField(
-        max_length=50,
-        choices=ESTADOS_RESERVA,
-        default='pendiente',
-        help_text="Estado de la reserva"
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reservas')
+    cabana = models.ForeignKey('Cabana', on_delete=models.CASCADE)
+    fecha_inicio = models.DateField()
+    fecha_fin = models.DateField()
+    monto_total = models.IntegerField(
+        help_text="Precio total de la reserva en pesos chilenos"
     )
-    fecha_inicio = models.DateTimeField()
-    fecha_fin = models.DateTimeField()
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name="reservas")
-    cabana = models.ForeignKey(Cabana, on_delete=models.CASCADE, related_name="reservas")
-    created = models.DateTimeField(auto_now_add=True, verbose_name="Fech. Creacion")
-    updated = models.DateTimeField(auto_now_add=True, verbose_name="Fech. Edicion")
+    estado = models.CharField(
+        max_length=20,
+        choices=[
+            ('confirmada', 'Confirmada'),
+            ('cancelada', 'Cancelada'),
+            ('completada', 'Completada')
+        ],
+        default='confirmada'
+    )
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name = "reserva"
-        verbose_name_plural = "reservas"
+        verbose_name = 'reserva'
+        verbose_name_plural = 'reservas'
 
     def __str__(self):
-        return f"Reserva {self.id} - {self.estado}"
-
-    @property
-    def noches(self):
-        """Calcula el número de noches de la reserva."""
-        return (self.fecha_fin - self.fecha_inicio).days
-
-    @property
-    def total(self):
-        """Calcula el precio total de la reserva."""
-        return self.noches * self.cabana.precio
+        return f"Reserva de {self.usuario.username} - {self.cabana.nombre_cabana}"
 
 
 class ActividadRecreativa(models.Model):
