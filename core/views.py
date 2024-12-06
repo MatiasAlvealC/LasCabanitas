@@ -6,6 +6,12 @@ from BD.models import Usuario, Cabana, Reserva, Inventario, Mantencion
 from functools import wraps
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import AuthenticationForm
+from .forms import CustomUserCreationForm
+
+from django.contrib.auth import authenticate, login
+
+
 
 # Decorador para proteger vistas administrativas
 def admin_required(view_func):
@@ -161,6 +167,35 @@ def reservas(request):
     return render(request, "core/reservas.html", {'reservas': todas_las_reservas})
 
 
+def register(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Registro exitoso. Ahora puedes iniciar sesión.')
+            return redirect('login')  # Redirige a la página de inicio de sesión
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'registration/register.html', {'form': form})
+
+def user_login(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('home')  # Redirige a la página de inicio
+            else:
+                messages.error(request, 'Nombre de usuario o contraseña incorrectos.')
+    else:
+        form = AuthenticationForm()
+    return render(request, 'registration/login.html', {'form': form})
+
+
+"""
 def login(request):
     if request.method == 'POST':
         correo = request.POST.get('email')
@@ -219,3 +254,4 @@ def register(request):
     
     return render(request, 'core/register.html')
 
+"""

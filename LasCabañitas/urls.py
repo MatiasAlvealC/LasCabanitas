@@ -13,11 +13,13 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib.auth.decorators import login_required
+#from django.contrib.auth.decorators import login_required
 from django.contrib import admin
 from django.urls import path
 from core import views
 from django.conf import settings
+from django.contrib.auth.views import LogoutView
+
 
 
 
@@ -30,12 +32,14 @@ urlpatterns = [
   path('inventario/<int:cabana_id>/agregar/', views.agregar_objeto, name='agregar_objeto'),
   path('misReservas/', views.misReservas, name='misReservas'),
   path('reservas/', views.reservas, name='reservas'),
-  path('login/', views.login, name='login'),
-  path('logout/', views.logout, name='logout'),
-  path('register/', views.register, name='register'),
+  #path('login/', views.login, name='login'),
+  #path('logout/', views.logout, name='logout'),
+  #path('register/', views.register, name='register'),
   path('disponibilidad/', views.disponibilidad, name='disponibilidad'),
   path('cabana/<int:cabana_id>/', views.cabana_detalle, name='cabana_detalle'),
-
+  path('register/', views.register, name='register'),
+  path('login/', views.user_login, name='login'),
+  path('logout/', LogoutView.as_view(), name='logout'),
 ]
 
 if settings.DEBUG:

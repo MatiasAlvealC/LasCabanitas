@@ -1,5 +1,7 @@
 from django.db import models
 from datetime import timedelta
+from django.contrib.auth.models import User
+
 
 class Usuario(models.Model):
     nombre = models.CharField(max_length=100)
