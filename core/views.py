@@ -15,21 +15,18 @@ from django.db.models import Q
 import json
 
 from django.contrib.auth import authenticate, login
+from .decorators import admin_required
 
 
 
 # Decorador para proteger vistas administrativas
 def admin_required(view_func):
     @wraps(view_func)
-    def wrapper(request, *args, **kwargs):
-        if not request.session.get('usuario_id'):
-            messages.error(request, 'Debe iniciar sesión primero')
-            return redirect('login')
-        if request.session.get('usuario_rol') != 'administrador':
-            messages.error(request, 'Acceso denegado. Se requieren permisos de administrador.')
-            return redirect('home')
-        return view_func(request, *args, **kwargs)
-    return wrapper
+    def _wrapped_view(request, *args, **kwargs):
+        if request.user.is_authenticated and request.user.groups.filter(name='admin').exists():
+            return view_func(request, *args, **kwargs)
+        return redirect('login')
+    return _wrapped_view
 
 def home(request):
     return render(request, "core/home.html")
@@ -134,7 +131,7 @@ def agregar_objeto(request, cabana_id):
         descripcion = request.POST.get('descripcion')
         cantidad = request.POST.get('cantidad')
         Inventario.objects.create(cabana=cabana, descripcion=descripcion, cantidad=cantidad)
-        messages.success(request, "Objeto agregado con éxito")
+        messages.success(request, "Objeto agregado con xito")
         return redirect('inventario_detalle', cabana_id=cabana.id)
     return render(request, "core/inventario_nuevo.html", {'cabana': cabana})
 
@@ -194,7 +191,7 @@ def register(request):
             cliente_group, created = Group.objects.get_or_create(name='cliente')
             user.groups.add(cliente_group)
             
-            messages.success(request, 'Registro exitoso. Ahora puedes iniciar sesi��n.')
+            messages.success(request, 'Registro exitoso. Ahora puedes iniciar sesin.')
             return redirect('login')
         else:
             messages.error(request, 'Error en el formulario. Por favor, verifica los datos.')
