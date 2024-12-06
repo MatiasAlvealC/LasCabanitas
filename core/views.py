@@ -67,6 +67,16 @@ def cabana_detalle(request, cabana_id):
 
 @login_required
 def crear_reserva(request, cabana_id):
+    # Verificar si el usuario ya tiene una reserva confirmada
+    tiene_reserva_confirmada = Reserva.objects.filter(
+        usuario=request.user,
+        estado='confirmada'
+    ).exists()
+
+    if tiene_reserva_confirmada:
+        messages.error(request, 'No puedes realizar una nueva reserva mientras tengas una reserva confirmada')
+        return redirect('misReservas')
+
     if request.method == 'POST':
         try:
             cabana = get_object_or_404(Cabana, id=cabana_id)
@@ -109,8 +119,23 @@ def crear_reserva(request, cabana_id):
 
 @login_required
 def misReservas(request):
-    reservas = Reserva.objects.filter(usuario=request.user).order_by('-fecha_inicio')
-    return render(request, 'core/miReserva.html', {'reservas': reservas})
+    # Obtener solo las reservas confirmadas del usuario
+    reservas_confirmadas = Reserva.objects.filter(
+        usuario=request.user,
+        estado='confirmada'
+    )
+
+    # Verificar si el usuario puede hacer nuevas reservas
+    puede_reservar = not Reserva.objects.filter(
+        usuario=request.user,
+        estado='confirmada'
+    ).exists()
+
+    context = {
+        'reservas': reservas_confirmadas,
+        'puede_reservar': puede_reservar
+    }
+    return render(request, 'core/miReserva.html', context)
 
 
 @admin_required
@@ -276,3 +301,19 @@ def register(request):
     return render(request, 'core/register.html')
 
 """
+
+@login_required
+def cancelar_reserva(request, reserva_id):
+    if request.method == 'POST':
+        reserva = get_object_or_404(Reserva, id=reserva_id, usuario=request.user)
+        
+        # Verificar que la reserva esté confirmada
+        if reserva.estado == 'confirmada':
+            # Cambiar estado a cancelada
+            reserva.estado = 'cancelada'
+            reserva.save()
+            messages.success(request, 'La reserva ha sido cancelada exitosamente.')
+        else:
+            messages.error(request, 'Solo se pueden cancelar reservas confirmadas.')
+            
+    return redirect('misReservas')
