@@ -318,20 +318,45 @@ def cancelar_reserva(request, reserva_id):
             messages.error(request, 'Solo se pueden cancelar reservas confirmadas.')
             
     return redirect('misReservas')
+
+
+
 @login_required
-def reservar_actividad(request):
+def actividades_recreativas(request):
+    actividades = ActividadRecreativa.objects.all()
+
     if request.method == 'POST':
-        actividad_id = request.POST.get('actividad')
-        fecha_actividad = request.POST.get('fecha_actividad')
+        nombre = request.POST.get('nombre')
+        descripcion = request.POST.get('descripcion')
+        precio = request.POST.get('precio')
 
-        actividad = get_object_or_404(ActividadRecreativa, id=actividad_id)
-
-        # Crear la reserva de actividad
-        reserva_actividad = ReservaActividad.objects.create(
-            usuario=request.user,
-            actividad=actividad,
-            fecha=fecha_actividad
+        # Crear nueva actividad
+        ActividadRecreativa.objects.create(
+            nombre=nombre,
+            descripcion=descripcion,
+            precio=precio
         )
 
-        messages.success(request, 'Actividad reservada exitosamente.')
-        return redirect('misReservas')
+        messages.success(request, 'Actividad recreativa agregada exitosamente.')
+        return redirect('actividades_recreativas')  # Redirigir a la misma vista
+
+    return render(request, 'core/actividades_recreativas.html', {'actividades': actividades})  
+
+@login_required
+@admin_required
+def agregar_actividad(request):
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre')
+        descripcion = request.POST.get('descripcion')
+        precio = request.POST.get('precio')
+
+        ActividadRecreativa.objects.create(
+            nombre=nombre,
+            descripcion=descripcion,
+            precio=precio
+        )
+
+        messages.success(request, 'Actividad recreativa agregada exitosamente.')
+        return redirect('actividades_recreativas')
+
+    return render(request, 'core/agregar_actividad.html')

@@ -82,6 +82,7 @@
                             <li class="nav-item"><a class="nav-link" href="{% url 'inventario' %}">Inventario</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'mantenciones' %}">Mantenciones</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'reservas' %}">Reservas</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'actividades_recreativas' %}">Actividades Recreativas</a></li>
                         {% elif user.groups.all.0.name == 'cliente' %}
                             <li class="nav-item"><a class="nav-link" href="{% url 'misReservas' %}">Mi Reserva</a></li>
                         {% endif %}

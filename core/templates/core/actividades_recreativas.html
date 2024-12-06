@@ -1,0 +1,53 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Actividades Recreativas</h2>
+
+    <form method="post" class="mb-4">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre de la Actividad:</label>
+            <input type="text" id="nombre" name="nombre" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción:</label>
+            <textarea id="descripcion" name="descripcion" class="form-control" rows="3" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="precio" class="form-label">Precio:</label>
+            <input type="number" id="precio" name="precio" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-success">Agregar Actividad</button>
+    </form>
+
+    {% if actividades %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for actividad in actividades %}
+                    <tr>
+                        <td>{{ actividad.nombre }}</td>
+                        <td>{{ actividad.descripcion }}</td>
+                        <td>${{ actividad.precio|floatformat:0 }} CLP</td>
+                        <td>
+                            <a href="#" class="btn btn-warning">Editar</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="alert alert-info">No hay actividades recreativas registradas.</div>
+    {% endif %}
+</div>
+{% endblock %} 

@@ -44,7 +44,8 @@ urlpatterns = [
   path('logout/', LogoutView.as_view(), name='logout'),
   path('crear-reserva/<int:cabana_id>/', views.crear_reserva, name='crear_reserva'),
   path('cancelar_reserva/<int:reserva_id>/', views.cancelar_reserva, name='cancelar_reserva'),
-  path('reservar_actividad/', views.reservar_actividad, name='reservar_actividad'),
+  path('actividades_recreativas/', views.actividades_recreativas, name='actividades_recreativas'),
+
 ]
 
 if settings.DEBUG:
