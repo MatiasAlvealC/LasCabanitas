@@ -2,33 +2,6 @@ from django.db import models
 from datetime import timedelta
 from django.contrib.auth.models import User
 
-
-"""
-class Usuario(models.Model):
-    nombre = models.CharField(max_length=100)
-    apellido_paterno = models.CharField(max_length=100)
-    apellido_materno = models.CharField(max_length=100, null=True, blank=True)
-    correo = models.EmailField(unique=True)
-    rut = models.CharField(max_length=12, unique=True, help_text="RUT chileno, formato: 12.345.678-9")
-    contrasena = models.CharField(max_length=128)
-    rol = models.CharField(
-        max_length=50,
-        choices=[
-            ('administrador', 'Administrador'),
-            ('cliente', 'Cliente'),
-        ],
-        help_text="Rol del usuario dentro del sistema"
-    )
-    created = models.DateTimeField(auto_now_add = True, verbose_name = "Fech. Creacion")
-    updated = models.DateTimeField(auto_now_add = True, verbose_name = "Fech. Edicion")
-
-    class Meta:
-        verbose_name = "usuario"
-        verbose_name_plural = "usuarios"
-
-    def __str__(self):
-        return f"{self.nombre} {self.apellido_paterno}"""
-
 class Cabana(models.Model):
     ESTADOS_CABANA = [
         ('disponible', 'Disponible'),
