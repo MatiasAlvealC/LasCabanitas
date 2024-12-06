@@ -13,7 +13,6 @@ from django.contrib.auth import login, authenticate
 from datetime import datetime, date, timedelta
 from django.db.models import Q
 import json
-
 from django.contrib.auth import authenticate, login
 from .decorators import admin_required
 
