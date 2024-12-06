@@ -154,3 +154,26 @@ class Mantencion(models.Model):
 
     def __str__(self):
         return f"{self.nombre} - {self.fecha_ejecucion} ({self.get_estado_display()})"
+
+class ReservaActividad(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reservas_actividades')
+    actividad = models.ForeignKey(ActividadRecreativa, on_delete=models.CASCADE)
+    fecha = models.DateField()
+    estado = models.CharField(
+        max_length=20,
+        choices=[
+            ('confirmada', 'Confirmada'),
+            ('cancelada', 'Cancelada'),
+            ('completada', 'Completada')
+        ],
+        default='confirmada'
+    )
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'reserva de actividad'
+        verbose_name_plural = 'reservas de actividades'
+
+    def __str__(self):
+        return f"Reserva de {self.actividad.nombre} - {self.usuario.username}"

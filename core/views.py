@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.hashers import make_password, check_password
-from BD.models import Cabana, Reserva, Inventario, Mantencion, ActividadRecreativa
+from BD.models import Cabana, Reserva, Inventario, Mantencion, ActividadRecreativa, ReservaActividad
 from functools import wraps
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
@@ -119,20 +119,27 @@ def crear_reserva(request, cabana_id):
 
 @login_required
 def misReservas(request):
-    # Obtener solo las reservas confirmadas del usuario
+    # Obtener reservas confirmadas del usuario
     reservas_confirmadas = Reserva.objects.filter(
         usuario=request.user,
         estado='confirmada'
     )
-
+    
+    # Obtener reservas de actividades del usuario
+    reservas_actividades = ReservaActividad.objects.filter(
+        usuario=request.user,
+        estado='confirmada'
+    )
+    
     # Obtener actividades recreativas disponibles
     actividades = ActividadRecreativa.objects.all()
-
+    
     # Verificar si el usuario puede hacer nuevas reservas
     puede_reservar = not reservas_confirmadas.exists()
-
+    
     context = {
         'reservas': reservas_confirmadas,
+        'reservas_actividades': reservas_actividades,
         'actividades': actividades,
         'puede_reservar': puede_reservar
     }
@@ -360,3 +367,41 @@ def agregar_actividad(request):
         return redirect('actividades_recreativas')
 
     return render(request, 'core/agregar_actividad.html')
+
+@login_required
+def reservar_actividad(request):
+    if request.method == 'POST':
+        actividad_id = request.POST.get('actividad')
+        fecha = request.POST.get('fecha_actividad')
+        
+        try:
+            actividad = ActividadRecreativa.objects.get(id=actividad_id)
+            
+            # Crear la reserva de actividad
+            ReservaActividad.objects.create(
+                usuario=request.user,
+                actividad=actividad,
+                fecha=fecha
+            )
+            
+            messages.success(request, 'Actividad reservada exitosamente')
+        except ActividadRecreativa.DoesNotExist:
+            messages.error(request, 'La actividad seleccionada no existe')
+        except Exception as e:
+            messages.error(request, f'Error al reservar la actividad: {str(e)}')
+            
+    return redirect('misReservas')
+
+@login_required
+def cancelar_reserva_actividad(request, reserva_id):
+    if request.method == 'POST':
+        reserva = get_object_or_404(ReservaActividad, id=reserva_id, usuario=request.user)
+        
+        if reserva.estado == 'confirmada':
+            reserva.estado = 'cancelada'
+            reserva.save()
+            messages.success(request, 'La reserva de actividad ha sido cancelada exitosamente.')
+        else:
+            messages.error(request, 'Solo se pueden cancelar reservas confirmadas.')
+            
+    return redirect('misReservas')
